@@ -1,5 +1,6 @@
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import generics, status
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -22,7 +23,29 @@ class PlaceDetail(generics.RetrieveUpdateDestroyAPIView):
 class GetNearestPlace(APIView):
     serializer_class = PlaceSerializer
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="latitude",
+                description="Point latitude",
+                required=False,
+                type=float,
+                default=0,
+            ),
+            OpenApiParameter(
+                name="longitude",
+                description="Point longitude",
+                required=False,
+                type=float,
+                default=0,
+            ),
+        ]
+    )
     def get(self, request: Request) -> Response:
+        """
+        The method returns the `name` of the nearest `Place`
+        according to the given coordinates.
+        """
         latitude = float(request.GET.get("latitude"))
         longitude = float(request.GET.get("longitude"))
         place = Point(longitude, latitude, srid=4326)
