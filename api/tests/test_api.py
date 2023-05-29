@@ -131,7 +131,7 @@ class ApiTests(TestCase):
             {"latitude": 116.5704, "longitude": 40.4319},
         )
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(
             response.json().get("message"), "Nearest place not found."
         )

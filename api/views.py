@@ -1,9 +1,9 @@
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
-from rest_framework import generics
-from rest_framework.decorators import api_view
+from rest_framework import generics, status
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from api.models import Place
 from api.serializers import PlaceSerializer
@@ -19,19 +19,26 @@ class PlaceDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PlaceSerializer
 
 
-@api_view(["GET"])
-def get_nearest_place(request: Request) -> Response:
-    latitude = float(request.GET.get("latitude"))
-    longitude = float(request.GET.get("longitude"))
-    place = Point(longitude, latitude, srid=4326)
+class GetNearestPlace(APIView):
+    serializer_class = PlaceSerializer
 
-    nearest_place = (
-        Place.objects.annotate(distance=Distance("geom", place))
-        .order_by("distance")
-        .first()
-    )
+    def get(self, request: Request) -> Response:
+        latitude = float(request.GET.get("latitude"))
+        longitude = float(request.GET.get("longitude"))
+        place = Point(longitude, latitude, srid=4326)
 
-    if not nearest_place:
-        return Response({"message": "Nearest place not found."})
+        nearest_place = (
+            Place.objects.annotate(distance=Distance("geom", place))
+            .order_by("distance")
+            .first()
+        )
 
-    return Response({"message": nearest_place.name})
+        if not nearest_place:
+            return Response(
+                {"message": "Nearest place not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        return Response(
+            {"message": nearest_place.name}, status=status.HTTP_200_OK
+        )
