@@ -32,24 +32,7 @@ Start the web server using the command below:
 python manage.py runserver
 ```
 
-### Running the application via the docker container.
-
-If you want to run the development version of the docker container, use the command below:
-
-```shell
-docker-compose -f docker-compose-dev.yml up -d
-```
-
-If you want to run the production version of the docker container, use the command below:
-
-```shell
-docker-compose -f docker-compose-prod.yml up -d
-```
-
 ### Swagger documentation.
 
-The GIS-API has several endpoints available, which you can check out in the swagger documentation (use **api/places/doc/swagger/**)
-
-### Heroku deployment.
-
-Check it out: [LINK]().
+The GIS-API has several endpoints available, which you can check out in the swagger documentation (use **http://127.0.0.1:8000/api/doc/swagger/**)
+![img.png](demo/images/img.png)
