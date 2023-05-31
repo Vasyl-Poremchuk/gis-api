@@ -32,7 +32,10 @@ Start the web server using the command below:
 python manage.py runserver
 ```
 
+**NOTE:** Before you can run and apply migrations, you must create a **PostgreSQL** database. Also, if you want to add the **PostGIS** extension to your table (in our case **places**), run the following command on the **Query Tool** tab:
+![img.png](demo/images/postgresql.png)
+
 ### Swagger documentation.
 
 The GIS-API has several endpoints available, which you can check out in the swagger documentation (use **http://127.0.0.1:8000/api/doc/swagger/**)
-![img.png](demo/images/img.png)
+![img.png](demo/images/endpoints.png)
