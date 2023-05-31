@@ -10,6 +10,13 @@ from api.serializers import PlaceSerializer
 PLACE_LIST_URL = reverse("api:place-list")
 
 
+def detail_url(place_pk: int) -> str:
+    """
+    The function returns the detailed URL of the place.
+    """
+    return reverse("api:place-detail", args=[place_pk])
+
+
 class ApiTests(TestCase):
     def setUp(self) -> None:
         self.client = APIClient()
@@ -57,10 +64,7 @@ class ApiTests(TestCase):
         self.assertEqual(response.data, serializer.data)
 
     def test_retrieve_place(self) -> None:
-        place_detail_url = reverse(
-            "api:place-detail",
-            kwargs={"pk": self.first_place.pk},
-        )
+        place_detail_url = detail_url(place_pk=self.first_place.pk)
         response = self.client.get(place_detail_url)
         place = Place.objects.get(pk=self.first_place.pk)
         serializer = PlaceSerializer(place)
@@ -69,10 +73,7 @@ class ApiTests(TestCase):
         self.assertEqual(response.data, serializer.data)
 
     def test_update_place(self) -> None:
-        place_detail_url = reverse(
-            "api:place-detail",
-            kwargs={"pk": self.second_place.pk},
-        )
+        place_detail_url = detail_url(place_pk=self.second_place.pk)
         payload = {
             "name": "Sydney Opera House",
             "description": "The Sydney Opera House is a multi-venue performing arts center located in "
@@ -91,10 +92,7 @@ class ApiTests(TestCase):
         self.assertEqual(place.geom, payload["geom"])
 
     def test_partial_update_place(self) -> None:
-        place_detail_url = reverse(
-            "api:place-detail",
-            kwargs={"pk": self.first_place.pk},
-        )
+        place_detail_url = detail_url(place_pk=self.first_place.pk)
         payload = {"geom": "SRID=4326;POINT (151.2153 -33.8568)"}
         response = self.client.patch(place_detail_url, payload)
         place = Place.objects.get(pk=self.first_place.pk)
@@ -103,10 +101,7 @@ class ApiTests(TestCase):
         self.assertEqual(place.geom, payload["geom"])
 
     def test_delete_place(self) -> None:
-        place_detail_url = reverse(
-            "api:place-detail",
-            kwargs={"pk": self.second_place.pk},
-        )
+        place_detail_url = detail_url(place_pk=self.second_place.pk)
         response = self.client.delete(place_detail_url)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
